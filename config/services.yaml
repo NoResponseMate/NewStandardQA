@@ -1,0 +1,150 @@
+# Put parameters here that don't need to change on each machine where the app is deployed
+# https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
+parameters:
+    locale: en_US
+
+services:
+    # Default configuration for services in *this* file
+    _defaults:
+        # Automatically injects dependencies in your services
+        autowire: true
+
+        # Automatically registers your services as commands, event subscribers, etc.
+        autoconfigure: true
+
+        # Allows optimizing the container by removing unused services; this also means
+        # fetching services directly from the container via $container->get() won't work
+        public: false
+
+    _instanceof:
+        Sylius\Bundle\ResourceBundle\Controller\ResourceController:
+            autowire: false
+        Sylius\Bundle\ResourceBundle\Form\Type\AbstractResourceType:
+            autowire: false
+
+    # Makes classes in src/ available to be used as services;
+    # this creates a service per class whose id is the fully-qualified class name
+    App\:
+        resource: '../src/*'
+        exclude: '../src/{Entity,Migrations,Services,Tests,Kernel.php}'
+
+    # Controllers are imported separately to make sure services can be injected
+    # as action arguments even if you don't extend any base controller class
+    App\Controller\:
+        resource: '../src/Controller'
+        tags: ['controller.service_arguments']
+
+    sylius.behat.context.hook.mailer:
+        synthetic: true
+
+    App\Services\ApplyLowestPriceOnChannelPricingsCommandDispatcher:
+        decorates: Sylius\PriceHistoryPlugin\Application\CommandDispatcher\ApplyLowestPriceOnChannelPricingsCommandDispatcherInterface
+        arguments:
+            - '@App\Services\ApplyLowestPriceOnChannelPricingsCommandDispatcher.inner'
+
+    App\Services\ApplyLowestPriceOnChannelPricingsCommandHandler:
+        decorates: Sylius\PriceHistoryPlugin\Application\CommandHandler\ApplyLowestPriceOnChannelPricingsHandler
+        arguments:
+            - '@App\Services\ApplyLowestPriceOnChannelPricingsCommandHandler.inner'
+
+    App\Services\ProductVariantLowestPriceDisplayChecker:
+        decorates: Sylius\PriceHistoryPlugin\Application\Checker\ProductVariantLowestPriceDisplayCheckerInterface
+        arguments:
+            - '@App\Services\ProductVariantLowestPriceDisplayChecker.inner'
+
+    App\Services\ProductVariantPricesCalculator:
+        decorates: Sylius\PriceHistoryPlugin\Application\Calculator\ProductVariantLowestPriceCalculatorInterface
+        arguments:
+            - '@App\Services\ProductVariantPricesCalculator.inner'
+
+    App\Services\PriceChangeLogger:
+        decorates: Sylius\PriceHistoryPlugin\Application\Logger\PriceChangeLoggerInterface
+        arguments:
+            - '@App\Services\PriceChangeLogger.inner'
+
+    App\Services\ProductLowestPriceBeforeDiscountProcessor:
+        decorates: Sylius\PriceHistoryPlugin\Application\Processor\ProductLowestPriceBeforeDiscountProcessorInterface
+        arguments:
+            - '@App\Services\ProductLowestPriceBeforeDiscountProcessor.inner'
+#
+#    App\Services\PriceHelper:
+#        decorates: Sylius\PriceHistoryPlugin\Application\Templating\Helper\PriceHelper
+#        arguments:
+#            - '@App\Services\PriceHelper.inner'
+
+    App\Services\ChannelFactory:
+        decorates: sylius.custom_factory.channel
+        decoration_priority: 512
+        arguments:
+            - '@App\Services\ChannelFactory.inner'
+
+    App\Services\ChannelPricingLogEntryFactory:
+        decorates: sylius_price_history.factory.channel_pricing_log_entry
+        decoration_priority: 256
+        arguments:
+            - '@App\Services\ChannelPricingLogEntryFactory.inner'
+
+    App\Services\ClearPriceHistoryCommand:
+        decorates: Sylius\PriceHistoryPlugin\Infrastructure\Cli\Command\ClearPriceHistoryCommand
+        arguments:
+            - '@App\Services\ClearPriceHistoryCommand.inner'
+
+    App\Services\CreateLogEntryOnPriceChangeObserver:
+        decorates: Sylius\PriceHistoryPlugin\Infrastructure\EntityObserver\CreateLogEntryOnPriceChangeObserver
+        arguments:
+            - '@App\Services\CreateLogEntryOnPriceChangeObserver.inner'
+
+    App\Services\ChannelChangeObserver:
+        decorates: Sylius\PriceHistoryPlugin\Infrastructure\EntityObserver\ProcessLowestPricesOnChannelChangeObserver
+        arguments:
+            - '@App\Services\ChannelChangeObserver.inner'
+
+    App\Services\ConfigChangeObserver:
+        decorates: Sylius\PriceHistoryPlugin\Infrastructure\EntityObserver\ProcessLowestPricesOnChannelPriceHistoryConfigChangeObserver
+        arguments:
+            - '@App\Services\ConfigChangeObserver.inner'
+
+    App\Services\EntityObserverListener:
+        decorates: sylius_price_history.listener.channel_pricing_change
+        arguments:
+            - '@App\Services\EntityObserverListener.inner'
+
+    App\Services\EventSubscriber:
+        decorates: Sylius\PriceHistoryPlugin\Infrastructure\EventSubscriber\ChannelPricingLogEntryEventSubscriber
+        arguments:
+            - '@App\Services\EventSubscriber.inner'
+
+    App\Services\VariantPricesProvider:
+        decorates: Sylius\PriceHistoryPlugin\Infrastructure\Provider\ProductVariantsPricesProvider
+        arguments:
+            - '@App\Services\VariantPricesProvider.inner'
+
+    App\Services\LogEntriesRemover:
+        decorates: Sylius\PriceHistoryPlugin\Application\Remover\ChannelPricingLogEntriesRemoverInterface
+        arguments:
+            - '@App\Services\LogEntriesRemover.inner'
+
+    App\Services\ChannelDenormalizer:
+        decorates: Sylius\PriceHistoryPlugin\Infrastructure\Serializer\ChannelDenormalizer
+        arguments:
+            - '@App\Services\ChannelDenormalizer.inner'
+
+    App\Services\ChannelPriceConfigDenormalizer:
+        decorates: Sylius\PriceHistoryPlugin\Infrastructure\Serializer\ChannelPriceHistoryConfigDenormalizer
+        arguments:
+            - '@App\Services\ChannelPriceConfigDenormalizer.inner'
+
+    App\Services\VariantNormalizer:
+        decorates: Sylius\PriceHistoryPlugin\Infrastructure\Serializer\ProductVariantNormalizer
+        arguments:
+            - '@App\Services\VariantNormalizer.inner'
+
+    App\Services\PriceExtension:
+        decorates: Sylius\PriceHistoryPlugin\Infrastructure\Twig\PriceExtension
+        arguments:
+            - '@App\Services\PriceExtension.inner'
+
+    App\Services\DataValidator:
+        decorates: Sylius\PriceHistoryPlugin\Application\Validator\ResourceInputDataPropertiesValidatorInterface
+        arguments:
+            - '@App\Services\DataValidator.inner'
