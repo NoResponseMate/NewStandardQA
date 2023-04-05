@@ -23,11 +23,11 @@
     ],
     "require": {
         "php": "^8.0",
-        "sylius/sylius": "~1.12",
+        "sylius/sylius": "1.13.x-dev",
         "symfony/dotenv": "^5.4 || ^6.0",
         "symfony/runtime": "^5.4 || ^6.0",
         "symfony/flex": "^2.1",
-        "sylius/price-history-plugin": "dev-main"
+        "sylius/sylius-rector": "dev-configure-1.13-upgrade"
     },
     "require-dev": {
         "behat/behat": "^3.7",
@@ -50,7 +50,6 @@
         "phpstan/phpstan-webmozart-assert": "^1.1",
         "phpunit/phpunit": "^8.5",
         "polishsymfonycommunity/symfony-mocker-container": "^1.0",
-        "rector/rector": "^0.14.6",
         "stripe/stripe-php": "^6.43",
         "sylius-labs/coding-standard": "^4.0",
         "sylius-labs/sylius-1-11-shim-bundle": "^1.0",
@@ -63,8 +62,15 @@
         {
             "type": "vcs",
             "url": "git@github.com:Sylius/PriceHistoryPlugin.git"
+        },
+        {
+            "type": "vcs",
+            "url": "git@github.com:TheMilek/SyliusRector.git"
         }
     ],
+    "conflict": {
+        "symfony/framework-bundle": "v6.2.8"
+    },
     "config": {
         "preferred-install": {
             "*": "dist"

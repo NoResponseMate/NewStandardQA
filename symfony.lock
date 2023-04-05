@@ -533,9 +533,6 @@
     "sylius/paypal-plugin": {
         "version": "v1.0.1"
     },
-    "sylius/price-history-plugin": {
-        "version": "dev-main"
-    },
     "sylius/registry": {
         "version": "v1.4.1"
     },
