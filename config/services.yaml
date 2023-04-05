@@ -52,10 +52,10 @@ services:
         arguments:
             - '@App\Services\ProductVariantLowestPriceDisplayChecker.inner'
 
-    App\Services\ProductVariantPricesCalculator:
-        decorates: Sylius\PriceHistoryPlugin\Application\Calculator\ProductVariantLowestPriceCalculatorInterface
-        arguments:
-            - '@App\Services\ProductVariantPricesCalculator.inner'
+#    App\Services\ProductVariantPricesCalculator:
+#        decorates: Sylius\PriceHistoryPlugin\Application\Calculator\ProductVariantLowestPriceCalculatorInterface
+#        arguments:
+#            - '@App\Services\ProductVariantPricesCalculator.inner'
 
     App\Services\PriceChangeLogger:
         decorates: Sylius\PriceHistoryPlugin\Application\Logger\PriceChangeLoggerInterface
@@ -71,6 +71,9 @@ services:
 #        decorates: Sylius\PriceHistoryPlugin\Application\Templating\Helper\PriceHelper
 #        arguments:
 #            - '@App\Services\PriceHelper.inner'
+
+    sylius_price_history.factory.channel_pricing_log_entry: # missing alias
+        alias: sylius.factory.channel_pricing_log_entry
 
     App\Services\ChannelFactory:
         decorates: sylius.custom_factory.channel
@@ -104,6 +107,9 @@ services:
         arguments:
             - '@App\Services\ConfigChangeObserver.inner'
 
+    sylius_price_history.listener.channel_pricing_change:
+        alias: sylius.listener.channel_pricing_change
+
     App\Services\EntityObserverListener:
         decorates: sylius_price_history.listener.channel_pricing_change
         arguments:
@@ -115,14 +121,14 @@ services:
             - '@App\Services\EventSubscriber.inner'
 
     App\Services\VariantPricesProvider:
-        decorates: Sylius\PriceHistoryPlugin\Infrastructure\Provider\ProductVariantsPricesProvider
+        decorates: sylius.provider.product_variants_prices
         arguments:
             - '@App\Services\VariantPricesProvider.inner'
 
-    App\Services\LogEntriesRemover:
-        decorates: Sylius\PriceHistoryPlugin\Application\Remover\ChannelPricingLogEntriesRemoverInterface
-        arguments:
-            - '@App\Services\LogEntriesRemover.inner'
+#    App\Services\LogEntriesRemover:
+#        decorates: Sylius\PriceHistoryPlugin\Application\Remover\ChannelPricingLogEntriesRemoverInterface
+#        arguments:
+#            - '@App\Services\LogEntriesRemover.inner'
 
     App\Services\ChannelDenormalizer:
         decorates: Sylius\PriceHistoryPlugin\Infrastructure\Serializer\ChannelDenormalizer
@@ -139,12 +145,15 @@ services:
         arguments:
             - '@App\Services\VariantNormalizer.inner'
 
+    Sylius\PriceHistoryPlugin\Infrastructure\Twig\PriceExtension:
+        alias: sylius.twig.extension.price
+
     App\Services\PriceExtension:
         decorates: Sylius\PriceHistoryPlugin\Infrastructure\Twig\PriceExtension
         arguments:
             - '@App\Services\PriceExtension.inner'
 
-    App\Services\DataValidator:
-        decorates: Sylius\PriceHistoryPlugin\Application\Validator\ResourceInputDataPropertiesValidatorInterface
-        arguments:
-            - '@App\Services\DataValidator.inner'
+#    App\Services\DataValidator:
+#        decorates: Sylius\PriceHistoryPlugin\Application\Validator\ResourceInputDataPropertiesValidatorInterface
+#        arguments:
+#            - '@App\Services\DataValidator.inner'

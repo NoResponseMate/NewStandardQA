@@ -6,19 +6,10 @@ imports:
 
     - { resource: "@SyliusShopBundle/Resources/config/app/config.yml" }
 
-    - { resource: "@SyliusPriceHistoryPlugin/config/config.yaml" }
+#    - { resource: "@SyliusPriceHistoryPlugin/config/config.yaml" }
 
 parameters:
     sylius_core.public_dir: '%kernel.project_dir%/public'
-
-sylius_price_history:
-    resources:
-        channel_pricing_log_entry:
-            classes:
-                repository: App\Services\ChannelPricingLogEntryRepository
-        channel_price_history_config:
-            classes:
-                model: App\Entity\Channel\ChannelPriceHistoryConfig
 
 sylius_addressing:
     resources:
@@ -58,6 +49,12 @@ sylius_channel:
                 model: App\Entity\Channel\Channel
 sylius_core:
     resources:
+        channel_pricing_log_entry:
+            classes:
+                repository: App\Services\ChannelPricingLogEntryRepository
+        channel_price_history_config:
+            classes:
+                model: App\Entity\Channel\ChannelPriceHistoryConfig
         product_image:
             classes:
                 model: App\Entity\Product\ProductImage
